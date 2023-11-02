@@ -84,19 +84,36 @@ my_DB.insert(table2)
 my_table1 = my_DB.search('cities')
 my_table1_filtered = my_table1.filter(lambda x: x['country'] == 'Italy')
 my_table1_selected = my_table1.select(['city', 'latitude'])
-print(my_table1)
-print()
-print(my_table1_selected)
-
-temps = []
-for item in my_table1_filtered.table:
-    temps.append(float(item['temperature']))
-print(sum(temps) / len(temps))
-print("Using aggregation")
-print(my_table1_filtered.aggregate(lambda x: sum(x) / len(x), 'temperature'))
-
-print()
+# print(my_table1)
+# print()
+# print(my_table1_selected)
+#
+# temps = []
+# for item in my_table1_filtered.table:
+#     temps.append(float(item['temperature']))
+# print(sum(temps) / len(temps))
+# print("Using aggregation")
+# print(my_table1_filtered.aggregate(lambda x: sum(x) / len(x), 'temperature'))
+#
+# print()
 my_table2 = my_DB.search('countries')
 my_table3 = my_table1.join(my_table2, 'country')
-my_table3_filtered = my_table3.filter(lambda x: x['EU'] == 'no').filter(lambda x: float(x['temperature']) < 5.0)
-print(my_table3_filtered.table)
+# my_table3_filtered = my_table3.filter(lambda x: x['EU'] == 'no').filter(lambda x: float(x['temperature']) < 5.0)
+# print(my_table3_filtered.table)
+
+#print min and max temp for city in EU dont have coatline
+table3_2 = my_table3.filter(lambda x: x['EU'] == 'yes').filter(lambda x: x['coastline'] == 'no')
+print("max temp")
+print(table3_2.aggregate(lambda x: max(x), 'temperature'))
+print("min temp")
+print(table3_2.aggregate(lambda x: min(x), 'temperature'))
+for countries in my_table2.table:
+    countries_table = my_table3.filter(lambda x: x['country'] == countries['country'])
+    if countries_table.table:
+        print(countries['country'], 'max', countries_table.aggregate(lambda x: max(x), 'latitude'))
+        print(countries['country'], 'min', countries_table.aggregate(lambda x: min(x), 'latitude'))
+
+
+
+
+
